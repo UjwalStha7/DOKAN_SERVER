@@ -3,7 +3,8 @@ config();
 
 
 const envConfig = {
-    PORT: process.env.PORT 
+    port : process.env.PORT,
+    connectionString : process.env.CONNECTION_STRING
 };
 
 export default envConfig;
