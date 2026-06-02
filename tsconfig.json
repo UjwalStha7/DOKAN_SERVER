@@ -14,7 +14,8 @@
     // "lib": ["esnext"],
     // "types": ["node"],
     // and npm install -D @types/node
-
+    "experimentalDecorators": true,                   /* Enable experimental support for legacy experimental decorators. */
+    "emitDecoratorMetadata": true,                    /* Emit design-type metadata for decorated declarations in source files. */
     // Other Outputs
     "sourceMap": true,
     "declaration": true,

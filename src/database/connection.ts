@@ -2,8 +2,10 @@
 import {Sequelize} from 'sequelize-typescript'; //{Sequelize} a class
 import envConfig from '../config/config';
 
-const sequelize = new Sequelize(envConfig.connectionString as string)
 
+const sequelize = new Sequelize(envConfig.connectionString as string,{
+    models : [__dirname + '/models']
+})
 try{
     sequelize.authenticate() //checks connection string user and password.
     .then(() => {
@@ -15,5 +17,10 @@ try{
 }catch(error){
     console.log(error);
 }
+
+sequelize.sync({force : false}).then(()=>{
+    console.log("local changes injected to database successfully")
+})
+
 
 export default sequelize;
