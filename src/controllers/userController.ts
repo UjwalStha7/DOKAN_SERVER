@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import User from "../database/models/userModel";
 // import sequelize from "../database/connection";
 import bcrypt from 'bcrypt';
+import generateToken from "../services/generateToken";
 
 
 class UserController{
@@ -60,8 +61,10 @@ class UserController{
                 })
             }else{
                 //password verify bhaye, generate token(unique identifier)
+                const token = generateToken(user.id)
                 res.status(200).json({
-                    message : "User logged in successfully"
+                    message : "User logged in successfully",
+                    token : token
                 })
             }
         } 
