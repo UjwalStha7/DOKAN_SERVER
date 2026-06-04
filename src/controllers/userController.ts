@@ -3,6 +3,8 @@ import User from "../database/models/userModel";
 // import sequelize from "../database/connection";
 import bcrypt from 'bcrypt';
 import generateToken from "../services/generateToken";
+import generateOtp from "../services/generateOtp";
+import sendMail from "../services/sendMail";
 
 
 class UserController{
@@ -20,7 +22,11 @@ class UserController{
             username, 
             email, 
             password : bcrypt.hashSync(password,12) //hashing the password before storing it in the database.
-    
+        })
+        await sendMail({ 
+            to : email,
+            subject : "Digital Dokan Account Registration", 
+            text : `Hi ${username}, Welcome to Digital Dokan. Your account has been created successfully.`
         })
 
         // await sequelize.query(`INSERT INTO users(id,username,email,password) VALUES (?,?,?,?)`, {
@@ -69,7 +75,40 @@ class UserController{
             }
         } 
     }
+    static async handleForgotPassword(req:Request,res:Response){
+        //accepting incoming user data(email)
+        const {email} = req.body
+        if(!email){
+            res.status(400).json({
+                message : "Please provide email"
+            })
+            return
+        }
+        const [user] = await User.findAll({
+            where : {
+                email : email
+            }
+        })
+        if(!user){
+            res.status(404).json({
+                message : "Email not registered"
+            })
+            return
+        }
+        const otp = generateOtp()
+        sendMail({
+            to : email,
+            subject : "Digital Dokan Password Reset OTP", 
+            text : `You just requested to reset your password. Your OTP is ${otp}.`
+        })
+        user.otp = otp.toString()
+        user.otpGeneratedTime = Date.now().toString()
+        await user.save()
+        
+        res.status(200).json({
+            message : "Password reset OTP sent !!!"
+        })
+    }
 }
-
 
 export default UserController
