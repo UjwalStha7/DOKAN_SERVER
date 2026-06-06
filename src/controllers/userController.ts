@@ -8,6 +8,7 @@ import sendMail from "../services/sendMail";
 import findData from "../services/findData";
 import sendResponse from "../services/sendResponse";
 import checkOtpExpiration from "../services/checkOtpExpiration";
+import envConfig from "../config/config";
 
 
 class UserController{
@@ -17,6 +18,18 @@ class UserController{
         if(!username || !email || !password){
             res.status(400).json({
                 message : "Please provide username,email,password"
+            })
+            return
+        }
+        //checking if the email already exist or not
+        const [data] = await User.findAll({
+            where : {
+                email : envConfig.adminEmail
+            }
+        })
+        if(data){
+            res.status(400).json({
+                message : "Try again later"  //to prevent hacker from knowing the user existence in the database, we can send a generic message like "Try again later" instead of "Email already exists"
             })
             return
         }
