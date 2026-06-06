@@ -41,10 +41,10 @@ class CategoryController{
             message: "Category added successfully"
         })
     }
-    async getCategories(req:Request, res:Response):Promise<void>{
+    async getCategory(req:Request, res:Response):Promise<void>{
         const data = await Category.findAll()
         res.status(200).json({
-            message: "Categories fetched successfully",
+            message: "Category fetched successfully",
             data
         })
     }
