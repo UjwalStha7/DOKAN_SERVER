@@ -24,7 +24,7 @@ class UserController{
         //checking if the email already exist or not
         const [data] = await User.findAll({
             where : {
-                email : envConfig.adminEmail
+                email : email
             }
         })
         if(data){
