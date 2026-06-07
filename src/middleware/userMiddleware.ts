@@ -47,10 +47,17 @@ class  UserMiddleware {
             }
         })
     }   
-    restrictTo(...roles:Role[]){ //rest operator is used to gather all the remaining arguments passed to the function into an array called roles. This allows the function to accept a variable number of arguments, which can be used to specify multiple roles that are allowed to access a particular route or resource.
+    accessTo(...roles:Role[]){ //rest operator is used to gather all the remaining arguments passed to the function into an array called roles. This allows the function to accept a variable number of arguments, which can be used to specify multiple roles that are allowed to access a particular route or resource.
         return (req:IExtendRequest, res:Response, next:NextFunction):void => {
            let userRole = req.user?.role as Role
-           console.log(userRole)
+           console.log(userRole, "Role")
+           if(!roles.includes(userRole)){ //includes method is used to check if the userRole is included in the roles array. If the userRole is not included in the roles array, it means that the user does not have the necessary permissions to access the resource, and a 403 Forbidden response is sent back to the client with an appropriate message.
+                res.status(403).json({
+                    message: "Access denied. You don't have permission to access this resource."
+                })
+                return
+           }
+           next()
         } 
     }
 } 
