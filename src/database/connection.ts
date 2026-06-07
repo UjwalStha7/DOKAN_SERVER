@@ -25,7 +25,7 @@ sequelize.sync({force : false, alter: false}).then(()=>{
 })
 
 // relationships 
-Product.belongsTo(Category) //product table ma categoryId chaiyeko hunale belongs to category
-Category.hasOne(Product) 
+Product.belongsTo(Category, {foreignKey : 'categoryId'}) //product table ma categoryId chaiyeko hunale belongs to category
+Category.hasOne(Product, {foreignKey : 'categoryId'}) 
 
 export default sequelize;

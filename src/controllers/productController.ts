@@ -2,14 +2,10 @@ import {Request, Response} from 'express';
 import Product from '../database/models/productModel';
 import Category from '../database/models/categoryModel';
 
-interface ProductRequest extends Request{
-    file? : {
-        filename : string
-    }
-}
+
 
 class ProductController {
-    async createProduct(req:ProductRequest, res:Response):Promise<void>{
+    async createProduct(req:Request, res:Response):Promise<void>{
         const {productName, productDescription, productPrice, productTotalStock, discount, categoryId} = req.body
         const filename = req.file ? req.file.filename : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS2IYhSn8Y9S9_HF3tVaYOepJBcrYcd809pBA&s"
         if(!productName || !productDescription || !productPrice || !productTotalStock || !categoryId){
@@ -35,7 +31,8 @@ class ProductController {
         const datas = await Product.findAll({
             include : [
                 {
-                    model : Category //joining category table with product table to get category details along with product details
+                    model : Category, //joining category table with product table to get category details along with product details
+                    attributes : ['id', 'categoryName'] //resolving over fetching.
                 }
             ]
         })
@@ -52,7 +49,8 @@ class ProductController {
             },
             include : [
                 {
-                    model : Category //joining category table with product table to get category details along with product details
+                    model : Category, //joining category table with product table to get category details along with product details
+                    attributes : ['id', 'categoryName']
                 }
             ]
         })
