@@ -28,6 +28,8 @@ class CategoryController{
         //bulkCreate method is used to insert multiple records into the database at once.
     }
     async addCategory(req:Request, res:Response):Promise<void>{
+        //@ts-ignore
+        console.log(res.userId)
         const {categoryName} = req.body;
         if(!categoryName){
             res.status(400).json({
