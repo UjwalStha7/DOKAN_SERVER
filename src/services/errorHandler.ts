@@ -3,6 +3,7 @@ import {Request, Response} from 'express'
  const errorHandler = (fn:Function)=>{ //errorHandler high order function and another is call back function
     return (req:Request, res:Response)=>{
         fn(req, res).catch((err:Error)=>{
+            console.log(err)
             res.status(500).json({
                 message : "Internal error",
                 errorMessage : err.message

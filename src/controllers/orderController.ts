@@ -3,6 +3,7 @@ import Order from "../database/models/orderModel";
 import OrderDetails from "../database/models/orderDetails";
 import { PaymentMethod } from "../globals/types";
 import Payment from "../database/models/paymentModel";
+import axios from 'axios'
 
 interface IProduct{
     productId : string,
@@ -34,8 +35,6 @@ class OrderController{
             userId //to track which person ordered
         })
         //for order details
-        console.log(orderData, "OrderData!!")
-        console.log(products)
         products.forEach(async function(product){
             await OrderDetails.create({
                 quantity : product.productQty,
@@ -44,19 +43,35 @@ class OrderController{
             })
         })
         //for payment
-        if(paymentMethod == PaymentMethod.COD){
-           await Payment.create({
-                orderId : orderData.id,
-                paymentMethod : paymentMethod,
-            })
-        }else if(paymentMethod == PaymentMethod.Khalti){
+        const paymentData = await Payment.create({
+            orderId : orderData.id,
+            paymentMethod : paymentMethod,
+        })
+        if(paymentMethod == PaymentMethod.Khalti){
             //khalti logic
+            const data = {
+                return_url : "http://localhost:5173/",
+                website_url : "http://localhost:5173/",
+                amount : totalAmount * 100 , //converting paisa into rupee
+                purchase_order_id : orderData.id,
+                purchase_order_name : "order_" + orderData.id
+            }
+            const response = await axios.post("https://dev.khalti.com/api/v2/epayment/initiate/",data,{
+                headers : {
+                    Authorization : "Key 805a43d4832f40ea980d83f4a2a09f4c"
+                }
+            })
+            const khaltiResponse = response.data
+            paymentData.pidx = khaltiResponse.pidx
+            paymentData.save()
+            res.status(200).json({
+                message : "Order created successfully",
+                url : khaltiResponse.payment_url
+            })
         }else{
             //esewa logic
         }
-        res.status(200).json({
-            message : "Order created successfully"
-        })
+        
     }
 }
 
