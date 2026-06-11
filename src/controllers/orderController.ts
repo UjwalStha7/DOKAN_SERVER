@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import Order from "../database/models/orderModel";
 import OrderDetails from "../database/models/orderDetails";
-import { PaymentMethod } from "../globals/types";
+import { PaymentMethod, PaymentStatus } from "../globals/types";
 import Payment from "../database/models/paymentModel";
 import axios from 'axios'
 
@@ -62,16 +62,52 @@ class OrderController{
                 }
             })
             const khaltiResponse = response.data
-            paymentData.pidx = khaltiResponse.pidx
+            paymentData.pidx = khaltiResponse.pidx //verifying if payment is done or not. checked using pidx and generated unique everytime when mehtod called.
             paymentData.save()
             res.status(200).json({
                 message : "Order created successfully",
-                url : khaltiResponse.payment_url
+                url : khaltiResponse.payment_url,
+                pidx : khaltiResponse.pidx
             })
+        }else if(paymentMethod == PaymentMethod.Esewa){
+
         }else{
-            //esewa logic
+            res.status(200).json({
+                message : "Order created successfully"
+            })
         }
         
+    }
+    static async verifyTransaction(req:Request, res:Response):Promise<void>{
+        const {pidx} = req.body
+        if(!pidx){
+            res.status(400).json({
+                message : "Please provide pidx"
+            })
+            return
+        }
+        const response = await axios.post("https://dev.khalti.com/api/v2/epayment/lookup/",{
+            pidx : pidx
+        },{
+            headers : {
+                "Authorization" : "Key 805a43d4832f40ea980d83f4a2a09f4c"
+            }
+        })
+        const data = response.data
+        if(data.status === "Completed"){
+            await Payment.update({paymentStatus : PaymentStatus.Paid},{
+                where : {
+                    pidx : pidx
+                }
+            })
+            res.status(200).json({
+                message : "Payment verified successfully"
+            })
+        }else{
+            res.status(200).json({
+                message : "Payment not verified or cancelled"
+            })
+        }
     }
 }
 
