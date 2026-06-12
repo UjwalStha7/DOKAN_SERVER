@@ -4,6 +4,7 @@ import userRoute from './routes/userRoute' //importing the auth route to use it 
 import categoryRoute from './routes/categoryRoute' //importing the category route to use it in the app.
 import productRoute from './routes/productRoute' //importing the product route to use it in the app.
 import orderRoute from './routes/orderRoute'
+import CartRoute from './routes/cartRoute'
 
 const app  = express();
 app.use(express.json()) //to parse the incoming request body in json format.
@@ -12,5 +13,6 @@ app.use('/api/auth',userRoute) //importing the auth route and using it in the ap
 app.use('/api/category',categoryRoute) //importing the category route and using it in the app.
 app.use('/api/product',productRoute) //importing the product route and using it in the app.
 app.use('/api/order',orderRoute)
+app.use("/api/cart",CartRoute)
 
 export default app;

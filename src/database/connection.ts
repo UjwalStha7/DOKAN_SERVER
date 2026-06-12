@@ -7,6 +7,7 @@ import Order from './models/orderModel';
 import User from './models/userModel';
 import Payment from './models/paymentModel';
 import OrderDetails from './models/orderDetails';
+import Cart from './models/cartModel';
 
 
 const sequelize = new Sequelize(envConfig.connectionString as string,{
@@ -47,5 +48,13 @@ Order.hasOne(OrderDetails, {foreignKey : 'orderId'})
 //OrderDetails X Product
 OrderDetails.belongsTo(Product, {foreignKey : 'productId'})
 Product.hasOne(OrderDetails, {foreignKey : 'productId'}) 
+
+// cart - user 
+Cart.belongsTo(User,{foreignKey:"userId"})
+User.hasOne(Cart,{foreignKey:"userId"})
+
+// cart - product 
+Cart.belongsTo(Product,{foreignKey:"productId"})
+Product.hasMany(Cart,{foreignKey:"productId"})
 
 export default sequelize;
