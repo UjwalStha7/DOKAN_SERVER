@@ -19,7 +19,8 @@
     "multer": "^2.1.1",
     "nodemailer": "^8.0.10",
     "pg": "^8.21.0",
-    "sequelize-typescript": "^2.1.6"
+    "sequelize-typescript": "^2.1.6",
+    "socket.io": "^4.8.3"
   },
   "devDependencies": {
     "@types/bcrypt": "^6.0.0",
