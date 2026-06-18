@@ -34,7 +34,7 @@ class UserController{
             return
         }
         // data --> users table ma insert garne 
-        await User.create({
+        const user = await User.create({
             username, 
             email, 
             password : bcrypt.hashSync(password,12) //hashing the password before storing it in the database.
