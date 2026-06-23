@@ -25,7 +25,10 @@ function startServer() {
         onlineUsers.push({socketId, userId, role})
     }
     io.on("connection", (socket) =>{
-        const token = socket.handshake.headers.token  //jwt token // same as req.header. passing data from client to server
+        //const token = socket.handshake.headers.token  //jwt token // same as req.header. passing data from client to server
+        console.log("connected")
+        const {token} = socket.handshake.auth // jwt token 
+        console.log(token,"TOKEN")
         if(token){
             console.log(token)
             jwt.verify(token as string, envConfig.jwtSecretKey as string, async (err:any, result:any) => {
@@ -38,15 +41,19 @@ function startServer() {
                         return
                     } 
                     // grab userId when user found
+                    console.log(socket.id,result.userId,userData.role)
                     addToOnlineUsers(socket.id, result.userId, userData.role) //connected client id.
                     console.log(onlineUsers)
                 }
             })
         }else{
-            socket.emit("error", "Please provide token")
+            console.log("triggered")
+            socket.emit("error","Please provide token")
         }
+        console.log(onlineUsers)
         socket.on("updateOrderStatus", async (data)=>{
             const {status, orderId,userId} = data
+            console.log(data,"USS")
             console.log(status, orderId)
             //checking if user is online or not.
             const findUser = onlineUsers.find(user=>user.userId == userId) // provide object // {socketId, userId, role}
@@ -61,7 +68,8 @@ function startServer() {
                 }
             )
             if(findUser){
-                io.to(findUser.socketId).emit("success", "Order status updated successfully")
+                console.log(findUser.socketId,"FS")
+                io.to(findUser.socketId).emit("statusUpdated",data)
             }else{
                 socket.emit("error", "User is not online")
             }
