@@ -16,7 +16,7 @@ function startServer() {
     });
     const io = new Server(server,{  //must provide http to know if they want to establish the connection or not. so server is send as parameter.
         cors : {
-            origin : 'http://localhost:5173' //restricting access to other requests.
+            origin : 'https://ecommerce.ujwal-shrestha.com.np/' //restricting access to other requests.
         }
     })
     let onlineUsers:{socketId:string, userId:string,role:string}[] = []

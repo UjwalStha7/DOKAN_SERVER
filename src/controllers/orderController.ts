@@ -74,8 +74,8 @@ class OrderController{
         if(paymentMethod == PaymentMethod.Khalti){
             //khalti logic
             const data = {
-                return_url : "http://localhost:5173/",
-                website_url : "http://localhost:5173/",
+                return_url : "https://ecommerce.ujwal-shrestha.com.np/",
+                website_url : "https://ecommerce.ujwal-shrestha.com.np/",
                 amount : totalAmount * 100 , //converting paisa into rupee
                 purchase_order_id : orderData.id,
                 purchase_order_name : "order_" + orderData.id
